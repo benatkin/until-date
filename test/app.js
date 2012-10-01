@@ -15,7 +15,11 @@ before(function(done) {
 });
 
 after(function(done) {
-  server.close(done);
+  try {
+    server.close(done);
+  } catch (e) {
+    done();
+  }
 });
 
 describe('home', function() {
@@ -23,6 +27,13 @@ describe('home', function() {
     request.get(rootUrl + '/', function(res) {
       expect(res.statusCode).to.equal(200);
       done();
+    });
+  });
+
+  it('should show how to use it', function(done) {
+    request.get(rootUrl + '/', function(res) {
+      done();
+      expect(res.text).to.contain('days until');
     });
   });
 });

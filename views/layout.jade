@@ -4,4 +4,8 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    h1= title
+    div
+      block content
+    div.source
+      a(href='https://github.com/resources/until.date.io/') source
