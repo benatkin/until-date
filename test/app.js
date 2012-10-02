@@ -68,35 +68,43 @@ describe('redirect', function() {
   });
 });
 
+var originalCurrentDate = app.currentDate;
+
+function setDate(year, month, day) {
+  app.currentDate = function() {
+    return new Date(year, month - 1, day);
+  }
+}
+
+function restoreDate() {
+  app.currentDate = originalCurrentDate;
+}
+
 describe('date', function() {
   it('should show the number of days for a future date', function(done) {
+    setDate(2012, 10, 20);
     request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer/);
       done();
     });
   });
 
-  it('should return the right number of days for a future date', function(done) {
-    var savedCurrentDate = app.currentDate;
-    app.currentDate = function() {
-      return new Date(2012, 11, 26);
-    }
+  it('should the right number of days for a future date', function(done) {
+    setDate(2012, 12, 26);
     request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer.*>5</);
-      app.currentDate = savedCurrentDate;
+      restoreDate();
       done();
     });
   });
 
   it('should return 0 for the same date', function(done) {
-    var savedCurrentDate = app.currentDate;
-    app.currentDate = function() {
-      return new Date(2012, 09, 31);
-    }
+    setDate(2012, 10, 31);
     request.get(rootUrl + '/2012/10/31/', function(res) {
       expect(res.text).to.match(/div.*answer.*>0</);
-      app.currentDate = savedCurrentDate;
+      restoreDate();
       done();
     });
   });
+
 });
