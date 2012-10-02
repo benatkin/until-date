@@ -4,13 +4,15 @@ var express = require('express')
 var app = express();
 
 // returns the current date or a fake date from the settings
-function date() {
-  return app.get('fakeDate') || new Date(Date.UTC());
+app.currentDate = function() {
+  var datetime = new Date()
+    , midnight = new Date(datetime.getFullYear(), datetime.getMonth(), datetime.getDay());
+  return midnight;
 }
 
 function daysUntil(untilDate) {
   var day = 1000 * 60 * 60 * 24
-    , ms = untilDate - date();
+    , ms = untilDate.getTime() - app.currentDate().getTime();
   return Math.floor(ms / day);
 }
 
@@ -33,6 +35,10 @@ app.get('/', function(req, res){
   res.render('index', { title: 'until.date.io' });
 });
 
+function pad(n) {
+  return (n < 10 ? '0' : '') + n;
+}
+
 app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
   if (! /\/$/.test(req.path)) {
     return res.redirect(req.path.replace(/$/, '/'));
@@ -40,7 +46,7 @@ app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
   var year = parseInt(req.params[0])
     , month = parseInt(req.params[1])
     , day = parseInt(req.params[2])
-    , iso = [year, month, day].join('-');
+    , iso = [year, pad(month), pad(day)].join('-');
   res.render('answer', {
     title: 'days until ' + iso, 
     days: daysUntil(new Date(year, month - 1, day))

@@ -48,9 +48,25 @@ describe('date', function() {
   });
 
   it('should return the right number of days for a future date', function(done) {
-    app.set('fakeDate', new Date(Date.UTC(2012, 11, 26)));
+    var savedCurrentDate = app.currentDate;
+    app.currentDate = function() {
+      return new Date(2012, 11, 26);
+    }
     request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer.*>5</);
+      app.currentDate = savedCurrentDate;
+      done();
+    });
+  });
+
+  it('should return 0 for the same date', function(done) {
+    var savedCurrentDate = app.currentDate;
+    app.currentDate = function() {
+      return new Date(2012, 09, 31);
+    }
+    request.get(rootUrl + '/2012/10/31/', function(res) {
+      expect(res.text).to.match(/div.*answer.*>0</);
+      app.currentDate = savedCurrentDate;
       done();
     });
   });
