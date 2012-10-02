@@ -3,6 +3,8 @@ var express = require('express')
 
 var app = express();
 
+var secondsInDay = 1000 * 60 * 60 * 24;
+
 // returns the current date or a fake date from the settings
 app.currentDate = function() {
   var datetime = new Date()
@@ -10,10 +12,23 @@ app.currentDate = function() {
   return midnight;
 }
 
+function afterDeployment(date) {
+  var deploymentDate = app.get('deployment date');
+  if (typeof deploymentDate == 'string' && deploymentDate.length > 0) {
+    var parts = deploymentDate.split('-')
+      , year = parseInt(parts[0])
+      , month = parseInt(parts[1])
+      , day = parseInt(parts[2]);
+    deploymentDate = new Date(year, month - 1, day);
+    var ms = date.getTime() - deploymentDate.getTime()
+    return Math.floor(ms / secondsInDay) >= 0;
+  }
+  return false;
+}
+
 function daysUntil(untilDate) {
-  var day = 1000 * 60 * 60 * 24
-    , ms = untilDate.getTime() - app.currentDate().getTime();
-  return Math.floor(ms / day);
+  var ms = untilDate.getTime() - app.currentDate().getTime();
+  return Math.floor(ms / secondsInDay);
 }
 
 app.configure(function(){
@@ -46,10 +61,16 @@ app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
   var year = parseInt(req.params[0])
     , month = parseInt(req.params[1])
     , day = parseInt(req.params[2])
-    , iso = [year, pad(month), pad(day)].join('-');
+    , iso = [year, pad(month), pad(day)].join('-')
+    , date = new Date(year, month - 1, day)
+    , days = daysUntil(date);
+  
+  if (days < 0) {
+    res.status(afterDeployment(date) ? 410 : 404);
+  }
   res.render('answer', {
     title: 'days until ' + iso, 
-    days: daysUntil(new Date(year, month - 1, day))
+    days: days
   });
 });
 

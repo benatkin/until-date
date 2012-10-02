@@ -7,6 +7,7 @@ var app = require('../')
 
 before(function(done) {
   app.set('port', process.env.PORT || 3001);
+  app.set('deployment date', '2012-10-02');
   rootUrl = 'http://localhost:' + app.get('port');
   server = http.createServer(app).listen(app.get('port'), function() {
     console.log('Listening on port ' + app.get('port'));
@@ -104,6 +105,45 @@ describe('date', function() {
     request.get(rootUrl + '/2012/10/31/', function(res) {
       expect(res.statusCode).to.equal(200);
       expect(res.text).to.match(/div.*answer.*>0</);
+      restoreDate();
+      done();
+    });
+  });
+
+  it('should return 404 code for a past date', function(done) {
+    setDate(2012, 10, 31);
+    request.get(rootUrl + '/2012/04/20/', function(res) {
+      expect(res.statusCode).to.equal(404);
+      restoreDate();
+      done();
+    });
+  });
+
+  it('should return 404 code for the previous day', function(done) {
+    setDate(2012, 04, 21);
+    request.get(rootUrl + '/2012/04/20/', function(res) {
+      expect(res.statusCode).to.equal(404);
+      restoreDate();
+      done();
+    });
+  });
+
+  it('should return 410 code for a past date after deployment', function(done) {
+    setDate(2012, 10, 31);
+    request.get(rootUrl + '/2012/10/30/', function(res) {
+      expect(res.statusCode).to.equal(410);
+      restoreDate();
+      done();
+    });
+  });
+
+  it('should return 404 when no deployment date set', function(done) {
+    var oldDeploymentDate = app.get('deployment date');
+    app.set('deployment date', undefined);
+    setDate(2012, 10, 31);
+    request.get(rootUrl + '/2012/10/30/', function(res) {
+      expect(res.statusCode).to.equal(404);
+      app.set('deployment date', oldDeploymentDate);
       restoreDate();
       done();
     });
