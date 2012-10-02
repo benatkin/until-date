@@ -41,7 +41,7 @@ function pad(n) {
 
 app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
   if (! /\/$/.test(req.path)) {
-    return res.redirect(req.path.replace(/$/, '/'));
+    return res.redirect(301, req.path.replace(/$/, '/'));
   }
   var year = parseInt(req.params[0])
     , month = parseInt(req.params[1])

@@ -37,6 +37,13 @@ describe('redirect', function() {
       done();
     });
   });
+
+  it('should permanently redirect to add a trailing slash', function(done) {
+    request.get(rootUrl + '/2012/04/20').redirects(0).end(function(res) {
+      expect(res.statusCode).to.equal(301);
+      done();
+    });
+  });
 });
 
 describe('date', function() {
