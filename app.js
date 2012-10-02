@@ -53,4 +53,8 @@ app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
   });
 });
 
+app.get(/\/\d\d\d\d(\/\d\d)?\/?/, function(req, res) {
+  res.redirect('/');
+});
+
 module.exports = app;

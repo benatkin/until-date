@@ -44,6 +44,28 @@ describe('redirect', function() {
       done();
     });
   });
+
+  it('should redirect years (for now)', function(done) {
+    request.get(rootUrl + '/2012/', function(res) {
+      expect(res.req.path).to.equal('/');
+      done();
+    });
+  });
+
+  it('should redirect months (for now)', function(done) {
+    request.get(rootUrl + '/2012/12', function(res) {
+      expect(res.req.path).to.equal('/');
+      done();
+    });
+  });
+
+  
+  it('should return 404 for invalid url', function(done) {
+    request.get(rootUrl + '/99', function(res) {
+      expect(res.statusCode).to.equal(404);
+      done();
+    });
+  });
 });
 
 describe('date', function() {
