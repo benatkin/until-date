@@ -41,8 +41,16 @@ describe('redirect', function() {
 
 describe('date', function() {
   it('should show the number of days for a future date', function(done) {
-    request.get(rootUrl + '/2012/04/20/', function(res) {
+    request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer/);
+      done();
+    });
+  });
+
+  it('should return the right number of days for a future date', function(done) {
+    app.set('fakeDate', new Date(Date.UTC(2012, 11, 26)));
+    request.get(rootUrl + '/2012/12/31/', function(res) {
+      expect(res.text).to.match(/div.*answer.*>5</);
       done();
     });
   });
