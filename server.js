@@ -1,7 +1,12 @@
 var app = require('./')
-  , http = require('http');
+  , http = require('http')
+  , server = http.createServer(app);
 
-app.set('port', process.env.PORT || 3000);
-http.createServer(app).listen(app.get('port'), function() {
-  console.log("Express server listening on port " + app.get('port'));
-});
+module.exports = server;
+
+if (! module.parent) {
+  app.set('port', process.env.PORT || 3000);
+  server.listen(app.get('port'), function() {
+    console.log("Express server listening on port " + app.get('port'));
+  });
+}
