@@ -23,3 +23,10 @@ a:hover {
 span.placeholder {
   color: #00f;
 }
+
+div.answer {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 80px;
+  text-align: center;
+}

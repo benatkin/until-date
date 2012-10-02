@@ -14,14 +14,6 @@ before(function(done) {
   });
 });
 
-after(function(done) {
-  try {
-    server.close(done);
-  } catch (e) {
-    done();
-  }
-});
-
 describe('home', function() {
   it('should return 200', function(done) {
     request.get(rootUrl + '/', function(res) {
@@ -32,8 +24,26 @@ describe('home', function() {
 
   it('should show how to use it', function(done) {
     request.get(rootUrl + '/', function(res) {
-      done();
       expect(res.text).to.contain('days until');
+      done();
+    });
+  });
+});
+
+describe('redirect', function() {
+  it('should redirect a date without a trailing slash', function(done) {
+    request.get(rootUrl + '/2012/04/20', function(res) {
+      expect(res.req.path).to.equal('/2012/04/20/'); // follow redirect
+      done();
+    });
+  });
+});
+
+describe('date', function() {
+  it('should show the number of days for a future date', function(done) {
+    request.get(rootUrl + '/2012/04/20/', function(res) {
+      expect(res.text).to.match(/div.*answer/);
+      done();
     });
   });
 });
