@@ -81,15 +81,16 @@ function restoreDate() {
 }
 
 describe('date', function() {
-  it('should show the number of days for a future date', function(done) {
+  it('should return 200 code and show the number of days for a future date', function(done) {
     setDate(2012, 10, 20);
     request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer/);
+      expect(res.statusCode).to.equal(200);
       done();
     });
   });
 
-  it('should the right number of days for a future date', function(done) {
+  it('should return the right number of days for a future date', function(done) {
     setDate(2012, 12, 26);
     request.get(rootUrl + '/2012/12/31/', function(res) {
       expect(res.text).to.match(/div.*answer.*>5</);
@@ -98,9 +99,10 @@ describe('date', function() {
     });
   });
 
-  it('should return 0 for the same date', function(done) {
+  it('should return 200 code and 0 days for the same date', function(done) {
     setDate(2012, 10, 31);
     request.get(rootUrl + '/2012/10/31/', function(res) {
+      expect(res.statusCode).to.equal(200);
       expect(res.text).to.match(/div.*answer.*>0</);
       restoreDate();
       done();
