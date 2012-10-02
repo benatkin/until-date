@@ -66,12 +66,19 @@ app.get(/\/(\d\d\d\d)\/(\d\d)\/(\d\d)\/?/, function(req, res) {
     , days = daysUntil(date);
   
   if (days < 0) {
-    res.status(afterDeployment(date) ? 410 : 404);
+    var code = afterDeployment(date) ? 410 : 404;
+    res.status(code);
+    res.render('past', {
+      title: iso + ' is in the past',
+      code: code,
+      message: afterDeployment(date) ? 'Gone' : 'Not Found'
+    })
+  } else {
+    res.render('answer', {
+      title: 'days until ' + iso, 
+      days: days
+    });
   }
-  res.render('answer', {
-    title: 'days until ' + iso, 
-    days: days
-  });
 });
 
 app.get(/\/\d\d\d\d(\/\d\d)?\/?/, function(req, res) {

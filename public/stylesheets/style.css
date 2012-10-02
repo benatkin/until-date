@@ -24,6 +24,10 @@ span.placeholder {
   color: #00f;
 }
 
+p.error {
+  color: #f00;
+}
+
 div.answer {
   margin-top: 10px;
   margin-bottom: 30px;

@@ -11,7 +11,8 @@ and the current date, a 410 will be returned.
 
 # status
 
-Not yet implemented.
+Running on Heroku at [until.date.io](http://until.date.io/) and
+[until-date.herokuapp.com](http://until-date.herokuapp.com/).
 
 # license
 

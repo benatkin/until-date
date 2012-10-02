@@ -110,10 +110,11 @@ describe('date', function() {
     });
   });
 
-  it('should return 404 code for a past date', function(done) {
+  it('should return 404 code and show a message for a past date', function(done) {
     setDate(2012, 10, 31);
     request.get(rootUrl + '/2012/04/20/', function(res) {
       expect(res.statusCode).to.equal(404);
+      expect(res.text).to.contain('in the past');
       restoreDate();
       done();
     });
