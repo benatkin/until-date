@@ -47,7 +47,7 @@ app.configure('development', function(){
 });
 
 app.get('/', function(req, res){
-  res.render('index', { title: 'until.date.io' });
+  res.render('index', { title: 'until-date' });
 });
 
 function pad(n) {
